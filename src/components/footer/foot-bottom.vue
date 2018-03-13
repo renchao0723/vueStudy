@@ -59,7 +59,7 @@ export default {
   }
   .foot_List{
     position: fixed;
-    z-index:999;
+    z-index:99;
     height: 1.2rem;
     padding:0 5%;
     bottom:0;

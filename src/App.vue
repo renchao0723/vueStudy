@@ -25,6 +25,10 @@ export default {
   }
   .icon-menu:before { content: "\e6d2"; }
   .icon-left:before { content: "\e6f4"; }
+  .icon-play:before { content: "\e6f5"; }
+  .icon-stop:before { content: "\e6f7"; }
+  .icon-voic:before { content: '\e6c4'; }
+  .icon-fullScreen:before { content: '\e68a'; }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif, "PingFang SC", "Microsoft YaHei", SimHei,Arial, SimSun;
   -webkit-font-smoothing: antialiased;
