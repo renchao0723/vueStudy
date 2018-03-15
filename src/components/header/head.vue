@@ -22,6 +22,7 @@ export default {
   @import '../../style/publicDeclar';
   .head{
     height: 0.9rem;
+    width: 100%;
     font-size:0.4rem;
     text-align: center;
     color: #ffffff;

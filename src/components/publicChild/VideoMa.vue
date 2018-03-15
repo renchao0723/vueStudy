@@ -1,20 +1,20 @@
 <template>
   <div class="videoPlugin" @touchstart='touchVideo' @touchend='touchVideoE' v-bind:style="videoStyle">
-    <video height="100%" width="100%" x-webkit-airplay="true" playsinline="true" loop="" :poster="cover_image">
-      <source controls="" :src="ResolutGroup.normal" type="video/mp4; codecs=" webkit-playsinline="" playsinline="">
+    <video height="100%" width="100%" x-webkit-airplay="true" autobuffer muted :poster="cover_image">
+      <source controls="" :src='ResolutGroup[0].source' type="video/mp4; codecs=" webkit-playsinline="" playsinline="">
     </video>
     <transition name="fade">
       <div id="videoMenu" v-show="isMenuOn" class="theme positVideo">
-        <div v-if="isplaying" class="iconfont icon-play videoPla"></div>
-        <div v-if="!isplaying" class="iconfont icon-stop videoPla"></div>
+        <div v-if="isplaying" class="iconfont icon-play videoPla" @click="playOrPause"></div>
+        <div v-if="!isplaying" class="iconfont icon-stop videoPla" @click="playOrPause"></div>
         <div class="videoRange">
           <span class="videoPlayTimes">{{playingProTimes}}</span>
-          <input class="playPro" v-model="playingPro" type="range"/>
+          <div style="width:70%;display: inline-block;"><input class="playPro" v-model="playingProPart" type="range" @click="currentTimePoint" /></div>
           <span class="videoTimes">{{videoTimes}}</span>
         </div>
         <div class="volume" v-show="isFull">
           <span class="iconfont icon-voic">
-            <input class="playVol" v-model="playingVol" type="range"/>
+            <input class="playVol" v-model="playingVol" type="range" :onchange="volumePoint"/>
           </span>
         </div>
         <div class="ResolutChange"  v-show="isFull">
@@ -40,27 +40,38 @@ export default {
       isMenuOn: false,
       isFull: false,
       isvioce: true,
-      playingVol: 10,
-      isplaying: true,
-      playingPro: 10,
+      playingVol: 1,
+      isplaying: false,
+      playingPro: 0,
+      playingProPart: 0,
       playback_spend: 1,
       videoStyle: {},
       videoTime: 193,
       cover_image: 'http://img1.myzx.cn/video/mysource/admin/20180208/5a7bcb2b4cb64.jpg',
       ResolutGroup: [
-        {'source': 'http://v.myzx.cn/mysource/default/20180208/5a7bcacc48c48.mp4', 'name': '标清'},
+        {'source': './static/test.mp4', 'name': '标清'},
         {'source': 'http://v.myzx.cn/mysource/default/20180208/5a7bcacc48c48.mp4', 'name': '高清'},
         {'source': 'http://v.myzx.cn/mysource/default/20180208/5a7bcacc48c48.mp4', 'name': '超清'}]
     }
   },
+  mounted: function () {
+    let video = document.getElementsByClassName('videoPlugin')[0].children[0]
+    setInterval(() => {
+      this.playingPro = parseInt(video.currentTime)
+    }, 500)
+    this.playingVol = video.volume
+  },
   methods: {
     touchVideo: function () {
-      this.isMenuOn = true
     },
     touchVideoE: function () {
-      setTimeout(() => {
-        this.isMenuOn = false
-      }, 3000)
+      // 要获取到放开时点击的元素是否在视频播放器内
+      if (!this.isMenuOn) {
+        this.isMenuOn = true
+        setTimeout(() => {
+          this.isMenuOn = false
+        }, 333000)
+      }
     },
     resumePlayPro: function (val) {
     //  重置播放进度条
@@ -77,16 +88,36 @@ export default {
           this.isFull = false
           break
         case false:
-          let height = document.documentElement.clientWidth
-          let width = document.documentElement.clientHeight
-          this.videoStyle = 'transform-origin: center; height: ' + height + 'px; width:' + width + 'px;;z-index: 999;position: fixed;left: ' + (height - width) / 2 + 'px;bottom: ' + -(height - width) / 2 + 'px;transform: rotate(90deg);'
+          let heightMa = document.body.clientWidth
+          let widthMa = document.body.clientHeight
+          this.videoStyle = 'transform-origin: center; height: ' + heightMa + 'px; width:' + widthMa + 'px;;z-index: 999;position: fixed;left: ' + (heightMa - widthMa) / 2 + 'px;bottom: ' + -(heightMa - widthMa) / 2 + 'px;transform: rotate(90deg);'
           this.isFull = true
       }
+    },
+    //  按键功能
+    playOrPause: function () {
+      let video = document.getElementsByClassName('videoPlugin')[0].children[0]
+      if (this.isplaying) {
+        video.pause()
+      } else {
+        video.play()
+        this.videoTime = parseInt(video.duration)
+      }
+      this.isplaying = !this.isplaying
+    },
+    currentTimePoint: function () {
+      this.playingPro = parseInt(document.getElementsByClassName('playPro')[0].value * this.videoTime / 100)
+      document.getElementsByClassName('videoPlugin')[0].children[0].currentTime = this.playingPro
+    },
+    volumePoint: function () {
+      this.playingVol = document.getElementsByClassName('playVol')[0].value
+      document.getElementsByClassName('videoPlugin')[0].children[0].volume = this.playingVol / 100
     }
   },
   watch: {
     playingPro: function (newVal, oldVal) {
-      this.resumePlayPro(newVal)
+      this.playingProPart = this.playingPro * 100 / this.videoTime
+      this.resumePlayPro(this.playingProPart)
     },
     playingVol: function (newVal, oldVal) {
       this.resumePlayingVol(newVal)
@@ -116,6 +147,7 @@ export default {
     line-height: 1rem;
     width: 100%;
     display: flex;
+    color: #ffffff;
     justify-content: space-between;
     align-items: center;
     padding: 0 0.3rem;
@@ -134,7 +166,7 @@ export default {
   .videoRange{
     line-height: 0.04rem;
     input[type=range] {
-      width: 70%;
+      width: 100%;
       -webkit-appearance: none;
       border-radius: 0.2rem; /*这个属性设置使填充进度条时的图形为圆角*/
       box-shadow: 1px 1px 1px rgba(159,159,159,0.8);

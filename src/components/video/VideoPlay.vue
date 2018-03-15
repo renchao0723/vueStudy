@@ -31,8 +31,28 @@ export default {
       items: [{
         name: 'make',
         age: '10'
-      },
-      {
+      }, {
+        name: 'make',
+        age: '10'
+      }, {
+        name: 'make',
+        age: '10'
+      }, {
+        name: 'make',
+        age: '10'
+      }, {
+        name: 'make',
+        age: '10'
+      }, {
+        name: 'make',
+        age: '10'
+      }, {
+        name: 'make',
+        age: '10'
+      }, {
+        name: 'make',
+        age: '10'
+      }, {
         name: 'marry',
         age: '10'
       }]

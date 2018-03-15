@@ -21,6 +21,7 @@ export default {
   @import '../../style/publicDeclar';
   .head{
     height: 3.7rem;
+    width: 100%;
     font-size:0.4rem;
     text-align: center;
     color: #fff;
@@ -28,7 +29,7 @@ export default {
     background-attachment:fixed;
     background-image: url('../../images/timg.jpg');
     -webkit-background-size:100% 100%;
-    background-size:contain;
+    background-size:cover;
     background-repeat:no-repeat;
   }
   .head_Search{

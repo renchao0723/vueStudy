@@ -18,7 +18,7 @@
           <div class="iconfont icon-menu"></div>
           <div>发现</div>
         </router-link>
-        <router-link :to="{name:'VideoPlay',params:{activeIndex :4} }" tag = 'li'>
+        <router-link :to="{name:'PrintInvoice',params:{activeIndex :4} }" tag = 'li'>
           <div class="iconfont icon-menu"></div>
           <div>我的</div>
         </router-link>
